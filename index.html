@@ -35,7 +35,8 @@
 
                 <div class="grid grid-cols-2 gap-2 mb-4">
                     <template x-for="(name, index) in settings.players" :key="index">
-                        <input type="text" x-model="settings.players[index]" :placeholder="'Player ' + (index+1)" class="border p-2 rounded text-sm focus:ring-2 focus:ring-indigo-400 outline-none">
+                        <input type="text" x-model="settings.players[index]" @focus="$el.select()"
+							:placeholder="'Player ' + (index+1)" class="border p-2 rounded text-sm focus:ring-2 focus:ring-indigo-400 outline-none">
                     </template>
 
                 </div>
