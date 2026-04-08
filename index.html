@@ -35,8 +35,7 @@
 
                 <div class="grid grid-cols-2 gap-2 mb-4">
                     <template x-for="(name, index) in settings.players" :key="index">
-                        <input type="text" x-model="settings.players[index]" @focus="$el.select()"
-							:placeholder="'Player ' + (index+1)" class="border p-2 rounded text-sm focus:ring-2 focus:ring-indigo-400 outline-none">
+                        <input type="text" x-model="settings.players[index]" @focus="$el.select()" :placeholder="'Player ' + (index+1)" class="border p-2 rounded text-sm focus:ring-2 focus:ring-indigo-400 outline-none">
                     </template>
 
                 </div>
@@ -117,11 +116,7 @@ class="font-medium text-sm">【底注】BASE Amount :</label>
                     <tr class=" sticky top-0 z-20 top-[82px] shadow-md bg-yellow-200 font-bold border-b-2 border-yellow-100">
                     
                         <td class="p-2 border border-yellow-200 text-center text-xs">#</td>
-                    		 <td class="p-2 border border-yellow-200 text-center italic animate-bounce" colspan="4">
-  ♠️2 Good Luck Have Fun
-</td>
-
-
+                    		 <td class="p-2 border border-yellow-200 text-center italic animate-bounce" colspan="4">♠️2 Good Luck Have Fun</td>
                         <template x-for="total in totals">
                             <td class="p-2 border border-yellow-200 text-center text-base" top-[40px]
                                 :class="total < 0 ? 'text-red-600' : (total > 0 ? 'text-green-700' : 'text-indigo-400')" x-text="Math.round(total * 100) / 100">
@@ -151,7 +146,7 @@ class="font-medium text-sm">【底注】BASE Amount :</label>
 							'text-gray-800': row.cards[pIdx] < settings.x2,
 							'text-red-800 font-bold bg-red-100': row.cards[pIdx] >= settings.x2 && row.cards[pIdx] < settings.x3,
 							'text-yellow-100 font-black bg-red-700 border-2 border-yellow-500': row.cards[pIdx] >= settings.x3,
-							'bborder-3 border-purple-500 font-bold text-green-700': row.cards[pIdx] === 0,
+							'border-2 border-yellow-400 bg-yellow-50 text-green-800 font-bold': row.cards[pIdx] === 0,
 							}"
 							style="line-height: 30px; width: 45px;">
 						</td>
@@ -161,7 +156,7 @@ class="font-medium text-sm">【底注】BASE Amount :</label>
 							:class="{
 							'text-red-500': row.results[pIdx] < 0,
 							'text-gray-300': row.results[pIdx] === 0,
-							'bg-yellow-100 text-green-600': row.cards[pIdx] === 0,
+							'bg-yellow-100 text-green-700 border-2 border-yellow-400 bg-yellow-50 shadow-md rounded-lg': row.cards[pIdx] === 0,
 							'text-blue-600': row.cards[pIdx] !== 0 && row.results[pIdx] > 0
 							}"
 							x-text="row.results[pIdx] % 1 === 0 ? row.results[pIdx] : row.results[pIdx].toFixed(2)">
@@ -219,7 +214,7 @@ class="font-medium text-sm">【底注】BASE Amount :</label>
                         <template x-for="(rank, i) in summaryRanks.amount">
                             <div class="flex justify-between text-sm py-2 px-3 rounded mb-1 border" :class="i === 0 ? 'animate-bounce bg-indigo-100 border-indigo-200 font-bold' : 'bg-gray-50 border-gray-100'">
                                 <span x-text="(i+1) + '. ' + rank.name"></span>
-                                <span :class="rank.val < 0 ? 'text-red-500' : 'text-green-700'" x-text="Math.round(rank.val * 100) / 100"></span>
+                                <span :class="rank.val < 0 ? 'text-red-600' : 'text-green-700'" x-text="Math.round(rank.val * 100) / 100"></span>
                             </div>
                         </template>
                     </div>
