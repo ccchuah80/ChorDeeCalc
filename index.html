@@ -43,10 +43,10 @@
              <div class="flex items-center gap-2">
                     <label
 class="font-medium text-sm">【底注】BASE Amount :</label>
-                    <input type="number" x-model.number="settings.baseAmount" class="border p-1 w-14 rounded text-sm font-bold no-spinner text-center">
+                    <input type="number" x-model.number="settings.baseAmount" @input="calculateAll()" class="border p-1 w-14 rounded text-sm font-bold no-spinner text-center">
                 </div>
                 <label class="flex items-center mt-2 text-[11px] text-gray-600">
-                    <input type="checkbox" x-model="settings.includeBaseInMult" class="mr-2">【底注也炒】Include BASE in Multiplier
+                    <input type="checkbox" x-model="settings.includeBaseInMult" @change="calculateAll()" class="mr-2">【底注也炒】Include BASE in Multiplier
                 </label>
             </div>
 
@@ -56,19 +56,19 @@ class="font-medium text-sm">【底注】BASE Amount :</label>
                     <div class="space-y-2">
                         <div class="flex items-center gap-2">
                             <label>【每张记分】Weight/ card :</label>
-                            <select x-model.number="settings.weight" class="border font-bold p-2 rounded">
+                            <select x-model.number="settings.weight" @change="calculateAll()" class="border font-bold p-2 rounded">
                                 <option value="0.5">0.5</option>
                                 <option value="1"> 1</option>
                                 <option value="2"> 2</option>
                                 <option value="5"> 5</option>
                             </select>
                         </div>
-                        <input type="number" placeholder="【其他数额】Other Amount" @input="settings.weight = parseFloat($event.target.value)" class="border p-1 w-full rounded no-spinner">
+                        <input type="number" placeholder="【其他数额】Other Amount" @input="settings.weight = parseFloat($event.target.value); calculateAll()" class="border p-1 w-full rounded no-spinner">
                     </div>
                     <div class="space-y-1 text-gray-600">
-                        <label class="flex items-center"><input type="checkbox" x-model="settings.allowRoundUp" class="mr-1">【向上舍入】Round Up</label>
-                        <label class="flex items-center"><input type="checkbox" x-model="settings.winnerTakeAllOnly" class="mr-1"> 【只对赢家】No Side Bet</label>
-                        <label class="flex items-center"><input type="checkbox" x-model="settings.multFirstThenBal" class="mr-1"> 【先乘再加】Mult. First</label>
+                        <label class="flex items-center"><input type="checkbox" x-model="settings.allowRoundUp" @change="calculateAll()" class="mr-1">【向上舍入】Round Up</label>
+                        <label class="flex items-center"><input type="checkbox" x-model="settings.winnerTakeAllOnly" @change="calculateAll()" class="mr-1"> 【只对赢家】No Side Bet</label>
+                        <label class="flex items-center"><input type="checkbox" x-model="settings.multFirstThenBal" @change="calculateAll()" class="mr-1"> 【先乘再加】Mult. First</label>
                     </div>
                 </div>
                 
@@ -140,12 +140,17 @@ class="font-medium text-sm">【底注】BASE Amount :</label>
 						<td class="p-1 border text-center">
 							<input type="number" min="0" max="13" 
 							x-model.number="row.cards[pIdx]"
-							@input="calculateRow(rIndex)"
+							@input="
+										if (row.cards[pIdx] > 13) row.cards[pIdx] = 13;
+										if (row.cards[pIdx] < 0) row.cards[pIdx] = 0;
+										calculateRow(rIndex);
+									"
 							class="input-card border rounded p-1 text-center text-[11px] focus:border-indigo-500 outline-none transition-all"
 							:class="{
 							'text-gray-800': row.cards[pIdx] < settings.x2,
-							'text-red-800 font-bold bg-red-100': row.cards[pIdx] >= settings.x2 && row.cards[pIdx] < settings.x3,
-							'text-yellow-100 font-black bg-red-700 border-2 border-yellow-500': row.cards[pIdx] >= settings.x3,
+							'text-red-800 font-bold bg-red-100 border-1 border-blue-300': row.cards[pIdx] >= settings.x2 && row.cards[pIdx] < settings.x3,
+							'text-amber-100 font-black bg-red-600 border-2 border-yellow-300': row.cards[pIdx] >= settings.x3 && row.cards[pIdx] < settings.x4,
+							'text-pink-200 font-black bg-red-800 border-2 border-amber-500': row.cards[pIdx] >= settings.x4,
 							'border-2 border-yellow-400 bg-yellow-50 text-green-800 font-bold': row.cards[pIdx] === 0,
 							}"
 							style="line-height: 30px; width: 45px;">
@@ -154,7 +159,7 @@ class="font-medium text-sm">【底注】BASE Amount :</label>
 					<template x-for="pIdx in [0,1,2,3]" :key="'result-' + pIdx">
 						<td class="p-1 bg-gray-50 border text-center font-bold text-sm transition-all"
 							:class="{
-							'text-red-500': row.results[pIdx] < 0,
+							'text-red-600': row.results[pIdx] < 0,
 							'text-gray-300': row.results[pIdx] === 0,
 							'bg-yellow-100 text-green-700 border-2 border-yellow-400 bg-yellow-50 shadow-md rounded-lg': row.cards[pIdx] === 0,
 							'text-blue-600': row.cards[pIdx] !== 0 && row.results[pIdx] > 0
@@ -184,7 +189,35 @@ class="font-medium text-sm">【底注】BASE Amount :</label>
                         </tr>
                     </template>
                 </tbody>
+				<tfoot class="bg-white">
+					<tr>
+						<td colspan="10" class="p-0 border-t-2 border-indigo-100">
+							<div class="flex justify-between items-center px-4 py-2 text-[10px] text-gray-500 font-medium tracking-tight">
+								<div class="flex gap-4">
+									<div class="flex items-center gap-1">
+										<span class="text-indigo-400">Weight/ card: </span>
+										<span class="text-gray-800 font-bold" x-text="settings.weight"></span>
+									</div>
+									<div class="flex items-center gap-1">
+										<span class="text-indigo-400">BASE Amount :</span>
+										<span class="text-gray-800 font-bold" x-text="settings.baseAmount"></span>
+									</div>
+									<template x-if="settings.includeBaseInMult">
+										<span class="bg-indigo-50 text-indigo-600 px-1 rounded border border-indigo-100 italic">Base Included in Mult</span>
+									</template>
+								</div>
+				
+								<div class="flex gap-4 border-l border-gray-200 pl-4">
+									<span><strong class="text-indigo-400">x2</strong> ≥<span class="text-gray-800" x-text="settings.x2"></span></span>
+									<span><strong class="text-indigo-400">x3</strong> ≥<span class="text-gray-800" x-text="settings.x3"></span></span>
+									<span><strong class="text-indigo-400">x4</strong> <span class="text-gray-800" x-text="settings.x4"></span></span>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</tfoot>
             </table>
+			       
         </div>
 
         <div class="mt-4 flex flex-col items-center gap-4">
@@ -229,6 +262,18 @@ class="font-medium text-sm">【底注】BASE Amount :</label>
                         </template>
                     </div>
                 </div>
+                <div class="mt-2 pt-2 text-red-100 text-[10px] leading-relaxed">
+					<div class="flex justify-between">
+						<span class="font-bold opacity-100">Game Settings:</span>
+					</div>
+					<div class="grid grid-cols-2 gap-x-4">
+						<p>• Weight/ card : <span class="font-bold text-white" x-text="settings.weight"></span></p>
+						<p>• BASE amount : <span class="font-bold text-white" x-text="settings.baseAmount"></span></p>
+						<p>• Double (x2) ≥ <span class="font-bold text-white" x-text="settings.x2"></span> cards</p>
+						<p>• Triple (x3) ≥ <span class="font-bold text-white" x-text="settings.x3"></span> cards</p>
+						<p>• Quad (x4) ≥ <span class="font-bold text-white" x-text="settings.x4"></span> cards (N/A if ≥14)</p>
+					</div>
+				</div>
 
                 <button @click="showSummary = false" class="w-full mt-8 bg-indigo-600 text-white py-3 rounded-lg font-bold">BACK</button>
             </div>
