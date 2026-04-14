@@ -150,7 +150,7 @@ class="font-medium text-sm">【底注】BASE Amount :</label>
 							'text-gray-800': row.cards[pIdx] < settings.x2,
 							'text-red-800 font-bold bg-red-100 border-1 border-blue-300': row.cards[pIdx] >= settings.x2 && row.cards[pIdx] < settings.x3,
 							'text-amber-100 font-black bg-red-600 border-2 border-yellow-300': row.cards[pIdx] >= settings.x3 && row.cards[pIdx] < settings.x4,
-							'text-pink-200 font-black bg-red-800 border-2 border-amber-500': row.cards[pIdx] >= settings.x4,
+							'text-red-400 font-black bg-gray-800 border-2 border-red-500': row.cards[pIdx] >= settings.x4,
 							'border-2 border-yellow-400 bg-yellow-50 text-green-800 font-bold': row.cards[pIdx] === 0,
 							}"
 							style="line-height: 30px; width: 45px;">
@@ -189,7 +189,7 @@ class="font-medium text-sm">【底注】BASE Amount :</label>
                         </tr>
                     </template>
                 </tbody>
-			<tfoot class="bg-white">
+			<tfoot class="bg-gray-100">
 				<tr>
 					<td colspan="10" class="p-0 border-t-2 border-indigo-100">
 						<div class="flex flex-wrap justify-between items-center px-4 py-2 text-[10px] text-gray-500 font-medium tracking-tight gap-y-2">
@@ -361,7 +361,7 @@ class="font-medium text-sm">【底注】BASE Amount :</label>
         function gameHandler() {
     return {
         settings: {
-            players: ['Player1', 'Player2', 'Player3', 'Player4'],
+            players: ['Player 1', 'Player 2', 'Player 3', 'Player 4'],
             baseAmount: 2,
             includeBaseInMult: false,
             weight: 1,
@@ -384,7 +384,7 @@ class="font-medium text-sm">【底注】BASE Amount :</label>
                 this.settings = data.settings;
                 this.rows = data.rows;
             } else {
-                for (let i = 0; i < 5; i++) this.createRow();
+                for (let i = 0; i < 10; i++) this.createRow();
             }
             this.calculateAll();
         },
